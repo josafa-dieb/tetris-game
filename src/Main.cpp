@@ -24,7 +24,7 @@ std::uniform_real_distribution<float> distr(-0.8, 0.8);
 Object *objSelected = nullptr;
 std::vector<Object *> *pecas = new std::vector<Object *>();
 
-//Funções responsável pro desenhar as peças e alocar na memória
+//Funções responsaveis por desenhar as peças e alocar-las na memória para manipulações
 Object *draw1(float x, float y, float z);
 Object *draw2(float x, float y, float z);
 Object *draw3(float x, float y, float z);
