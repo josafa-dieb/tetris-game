@@ -1,3 +1,8 @@
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
 #include "../includes/Object.h"
 #include <GL/glut.h>
 #include <iostream>
@@ -100,3 +105,8 @@ void Object::setPosZ(float z)
 Object::~Object()
 {
 }
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/

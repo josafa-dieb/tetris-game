@@ -1,3 +1,8 @@
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
 #ifndef H_QUAD
 #include "../includes/Quad.h"
 #include <iostream>
@@ -52,3 +57,8 @@ Quad::~Quad()
 {
 }
 #endif
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/

@@ -1,3 +1,8 @@
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
 class Quad
 {
 private:
@@ -17,3 +22,8 @@ public:
     Quad(float x, float y, float z, float scale);
     ~Quad();
 };
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/

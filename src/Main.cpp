@@ -1,3 +1,8 @@
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
 #include <iostream>
 #include <GL/glut.h>
 #include "../includes/Object.h"
@@ -327,3 +332,8 @@ Object *draw7(float x, float y, float z)
     L->quads[7]->draw(1.0f, 0.f, 0.f);
     return L;
 }
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/

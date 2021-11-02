@@ -1,3 +1,8 @@
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
 #include "Quad.h"
 
 /* data */
@@ -27,3 +32,8 @@ public:
     Object(float x, float y, float z, float scale);
     ~Object();
 };
+/**
+ *  @author Josafá Dieb
+ *  @date 02/11/2021
+ *  @matricula: 500183 
+ **/
