@@ -1,0 +1,1 @@
+g++ -o build/executable.out src/*.cpp -lglut -lGLU -lGL -lm
