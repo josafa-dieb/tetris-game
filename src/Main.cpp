@@ -333,6 +333,8 @@ void keyboardEvent(unsigned char key, int x, int z)
     }
 }
 
+
+// função que desenha as 7 peças
 Object *draw1(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
