@@ -53,6 +53,9 @@ void Quad::setPosZ(float z) {
 void Quad::setScale(float scale) {
     Quad::scale = scale;
 }
+void Quad::setVisible(bool visiblity){
+    Quad::visible = visiblity;
+}
 Quad::~Quad()
 {
 }

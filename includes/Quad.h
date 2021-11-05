@@ -10,6 +10,7 @@ private:
     bool visible;
 public:
     bool isVisible();
+    void setVisible(bool visibility);
     float getPosX();
     float getPosY();
     float getPosZ();

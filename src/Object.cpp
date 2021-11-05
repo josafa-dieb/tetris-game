@@ -7,31 +7,26 @@
 #include <GL/glut.h>
 #include <iostream>
 
-Object::Object(float x, float y, float z, float scale) {
+Object::Object(float x, float y, float z, float scale)
+{
     scaleDefault = scale;
-    Quad *quad1 = new Quad(x, y, z, scale);               //x y z s
-    Quad *quad2 = new Quad((x + 2 * scale), y, z, scale); // 2*scale+x, y,z
-    Quad *quad3 = new Quad(x, (y + 2 * scale), z, scale); // x, 2*scale+y, z
-    Quad *quad4 = new Quad((x + 2 * scale), (y + 2 * scale), z, scale);
-    Quad *quad5 = new Quad(x, (y - 2 * scale), z, scale);
-    Quad *quad6 = new Quad((x + 2 * scale), (y - 2 * scale), z, scale);
-    Quad *quad7 = new Quad((x - 2 * scale), y, z, scale);
-    Quad *quad8 = new Quad((x - 2 * scale), (y + 2 * scale), z, scale);
-    Quad *quad9 = new Quad((x - 2 * scale), (y - 2 * scale), z, scale);
-    quads[0] = quad1;
-    quads[1] = quad2;
-    quads[2] = quad3;
-    quads[3] = quad4;
-    quads[4] = quad5;
-    quads[5] = quad6;
-    quads[6] = quad7;
-    quads[7] = quad8;
-    quads[8] = quad9;
+    quads[0] = new Quad((x - 2 * scale), (y + 2 * scale), z, scale);
+    quads[1] = new Quad(x, (y + 2 * scale), z, scale);
+    quads[2] = new Quad((x + 2 * scale), (y + 2 * scale), z, scale);
+    quads[3] = new Quad((x - 2 * scale), y, z, scale);
+    quads[4] = new Quad(x, y, z, scale);
+    quads[5] = new Quad((x + 2 * scale), y, z, scale);
+    quads[6] = new Quad((x - 2 * scale), (y - 2 * scale), z, scale);
+    quads[7] = new Quad(x, (y - 2 * scale), z, scale);
+    quads[8] = new Quad((x + 2 * scale), (y - 2 * scale), z, scale);
 }
 
-void Object::draw(float r, float g, float b) {
-    for (int i = 0; i < 9; i++) {
-        if (quads[i]->isVisible()) {
+void Object::draw(float r, float g, float b)
+{
+    for (int i = 0; i < 9; i++)
+    {
+        if (quads[i]->isVisible())
+        {
             quads[i]->draw(1.f, 0.f, 0.f);
         }
     }
@@ -76,29 +71,30 @@ float Object::getPosZ(int index)
 
 void Object::setPosX(float x)
 {
-    quads[0]->setPosX(x);
-    quads[1]->setPosX(x + 2 * scaleDefault);
-    quads[2]->setPosX(x);
-    quads[3]->setPosX(x + 2 * scaleDefault);
+
+    quads[0]->setPosX(x - 2 * scaleDefault);
+    quads[1]->setPosX(x);
+    quads[2]->setPosX(x + 2 * scaleDefault);
+    quads[3]->setPosX(x - 2 * scaleDefault);
     quads[4]->setPosX(x);
     quads[5]->setPosX((x + 2 * scaleDefault));
     quads[6]->setPosX((x - 2 * scaleDefault));
-    quads[7]->setPosX((x - 2 * scaleDefault));
-    quads[8]->setPosX((x - 2 * scaleDefault));
+    quads[7]->setPosX((x));
+    quads[8]->setPosX((x + 2 * scaleDefault));
 }
 void Object::setPosY(float y)
 {
-    quads[0]->setPosY(y);
-    quads[1]->setPosY(y);
+    quads[0]->setPosY(y + 2 * scaleDefault);
+    quads[1]->setPosY(y + 2 * scaleDefault);
     quads[2]->setPosY(y + 2 * scaleDefault);
-    quads[3]->setPosY(y + 2 * scaleDefault);
-    quads[4]->setPosY(y - 2 * scaleDefault);
-    quads[5]->setPosY(y - 2 * scaleDefault);
-    quads[6]->setPosY(y);
-    quads[7]->setPosY(y + 2 * scaleDefault);
+    quads[3]->setPosY(y);
+    quads[4]->setPosY(y);
+    quads[5]->setPosY(y);
+    quads[6]->setPosY(y - 2 * scaleDefault);
+    quads[7]->setPosY(y - 2 * scaleDefault);
     quads[8]->setPosY(y - 2 * scaleDefault);
 }
-
+// não precisaremos implementar por enquanto
 void Object::setPosZ(float z)
 {
 }

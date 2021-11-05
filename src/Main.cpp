@@ -14,7 +14,7 @@
 #define DEFAULT_SCALE 0.05f
 
 unsigned int IS_DRAGGING = 0;
-unsigned int WIDTH = 480, HEGIHT = WIDTH;
+unsigned int WIDTH = 512, HEGIHT = WIDTH;
 int PECA = 1;
 int PECA_AMMOUNT = 0;
 
@@ -265,6 +265,87 @@ void keyboardEvent(unsigned char key, int x, int z)
     case '7':
         PECA = 7;
         break;
+    case 'r':
+        if (objSelected != nullptr)
+        {
+            float xx, yy;
+            xx = (float)objSelected->getPosX(0);
+            yy = (float)objSelected->getPosY(0);
+
+            // para rotacionar em 90º não irei utilizar conceitos matemáticos apenas uma solução intuitiva
+            // criarei uma matriz auxiliar para armazenar nas linhas as colunas da atual..
+            // | 0 1 1 |    | 1 0 0 |    | 0 1 1 |
+            // | 0 1 0 | -> | 1 1 1 | -> | 0 1 0 |
+            // | 1 1 0 |    | 0 0 1 |    | 1 1 0 |
+            //
+            // | 0 1 0 |    | 0 1 0 |    | 0 1 0 |    | 0 0 0 |
+            // | 0 1 1 | -> | 1 1 1 | -> | 1 1 0 | -> | 1 1 1 |
+            // | 0 1 0 |    | 0 0 0 |    | 0 1 0 |    | 0 1 0 |
+            //
+            // A solução recomendada seria utilizar glRotatef, mas fiz assim a titulo de curiosidade.
+            Quad *matriz_aux[3][3];
+            Quad *matriz_roteted[3][3];
+
+            // pando a lista de chunk para matriz
+            float visibleCoords[9];
+            int L_cursor = 0, I_cursor = 0, J_cursor = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                if (i % 3 == 0 && i != 0)
+                {
+                    I_cursor += 1;
+                }
+                J_cursor = i % 3;
+                matriz_aux[I_cursor][2 - J_cursor] = objSelected->quads[L_cursor];
+                L_cursor += 1;
+            }
+
+            //criando a matriz rotacionada
+            L_cursor = 0, I_cursor = 0, J_cursor = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                if (i % 3 == 0 && i != 0)
+                {
+                    I_cursor += 1;
+                }
+                J_cursor = i % 3;
+                matriz_roteted[I_cursor][J_cursor] = matriz_aux[J_cursor][I_cursor];
+            }
+            L_cursor = 0, I_cursor = 0, J_cursor = 0;
+
+            //verificando as novas coordenadas e persistindo nas lista de chunk
+            for (int i = 0; i < 9; i++)
+            {
+                if (i % 3 == 0 && i != 0)
+                {
+                    I_cursor += 1;
+                }
+                J_cursor = i % 3;
+                bool rotatedChunkIsVisible = matriz_roteted[I_cursor][J_cursor]->isVisible();
+                if (rotatedChunkIsVisible)
+                {
+                    visibleCoords[L_cursor] = 1;
+                }
+                else
+                {
+                    visibleCoords[L_cursor] = 0;
+                }
+                L_cursor += 1;
+            }
+
+            // esse ultimo for seta a visibilidades salvas
+            for (int i = 0; i < 9; i++)
+            {
+                if (visibleCoords[i] == 1)
+                {
+                    objSelected->quads[i]->setVisible(true);
+                }
+                else if (visibleCoords[i] == 0)
+                {
+                    objSelected->quads[i]->setVisible(false);
+                }
+            }
+        }
     default:
         break;
     }
@@ -273,25 +354,25 @@ void keyboardEvent(unsigned char key, int x, int z)
 Object *draw1(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
     L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
+    L->quads[3]->draw(1.0f, 0.f, 0.f);
     L->quads[4]->draw(1.0f, 0.f, 0.f);
+    L->quads[7]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 Object *draw2(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
+    L->quads[1]->draw(1.0f, 0.f, 0.f);
     L->quads[4]->draw(1.0f, 0.f, 0.f);
+    L->quads[7]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 Object *draw3(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
     L->quads[2]->draw(1.0f, 0.f, 0.f);
+    L->quads[3]->draw(1.0f, 0.f, 0.f);
     L->quads[4]->draw(1.0f, 0.f, 0.f);
     L->quads[5]->draw(1.0f, 0.f, 0.f);
     return L;
@@ -300,36 +381,36 @@ Object *draw4(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
     L->quads[0]->draw(1.0f, 0.f, 0.f);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
     L->quads[3]->draw(1.0f, 0.f, 0.f);
+    L->quads[4]->draw(1.0f, 0.f, 0.f);
+    L->quads[5]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 Object *draw5(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
-    L->quads[6]->draw(1.0f, 0.f, 0.f);
     L->quads[2]->draw(1.0f, 0.f, 0.f);
+    L->quads[1]->draw(1.0f, 0.f, 0.f);
+    L->quads[4]->draw(1.0f, 0.f, 0.f);
     L->quads[3]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 Object *draw6(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[3]->draw(1.0f, 0.f, 0.f);
+    L->quads[2]->draw(1.0f, 0.f, 0.f);
     L->quads[4]->draw(1.0f, 0.f, 0.f);
+    L->quads[5]->draw(1.0f, 0.f, 0.f);
+    L->quads[7]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 Object *draw7(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
     L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[6]->draw(1.0f, 0.f, 0.f);
-    L->quads[7]->draw(1.0f, 0.f, 0.f);
+    L->quads[2]->draw(1.0f, 0.f, 0.f);
+    L->quads[4]->draw(1.0f, 0.f, 0.f);
+    L->quads[5]->draw(1.0f, 0.f, 0.f);
     return L;
 }
 /**
