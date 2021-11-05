@@ -19,7 +19,7 @@ public:
     void setPosY(float y);
     void setPosZ(float z);
     void setScale(float scale);
-    void draw(float r, float g, float b);
+    void draw();
     Quad(float x, float y, float z, float scale);
     ~Quad();
 };

@@ -12,7 +12,7 @@
 class Object
 {
 private:
-    float scaleDefault;
+    float scaleDefault, r, g, b;
     float border = {};
 public:
     // we will keep pointers to bit quads save in a vector and each block is a little chunk of the piece
@@ -22,7 +22,8 @@ public:
     float getPosY(int index);
     float getPosZ(int index);
     void drawBorder();
-    void draw(float r, float g, float b);
+    void draw();
+    void setColor(float r, float g, float b);
     // setPos set position of the piece in each index of Quads pointers vector
     void setPosX(float x);
     void setPosY(float y);

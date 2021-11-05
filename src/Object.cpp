@@ -9,6 +9,9 @@
 
 Object::Object(float x, float y, float z, float scale)
 {
+    Object::r = 1.f;
+    Object::g = 0.f;
+    Object::b = 0.f;
     scaleDefault = scale;
     quads[0] = new Quad((x - 2 * scale), (y + 2 * scale), z, scale);
     quads[1] = new Quad(x, (y + 2 * scale), z, scale);
@@ -20,14 +23,20 @@ Object::Object(float x, float y, float z, float scale)
     quads[7] = new Quad(x, (y - 2 * scale), z, scale);
     quads[8] = new Quad((x + 2 * scale), (y - 2 * scale), z, scale);
 }
-
-void Object::draw(float r, float g, float b)
+void Object::setColor(float r, float g, float b)
+{
+    Object::r = r;
+    Object::g = g;
+    Object::b = b;
+}
+void Object::draw()
 {
     for (int i = 0; i < 9; i++)
     {
         if (quads[i]->isVisible())
         {
-            quads[i]->draw(1.f, 0.f, 0.f);
+            glColor3f(Object::r, Object::g, Object::b);
+            quads[i]->draw();
         }
     }
 }
@@ -41,14 +50,14 @@ void Object::drawBorder()
             glLineWidth(2.f);
             glBegin(GL_LINES);
             glColor3f(0.f, 0.f, 0.f);
-            glVertex2f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() + scaleDefault);
-            glVertex2f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() - scaleDefault);
-            glVertex2f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() + scaleDefault);
-            glVertex2f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() + scaleDefault);
-            glVertex2f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() + scaleDefault);
-            glVertex2f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() - scaleDefault);
-            glVertex2f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() - scaleDefault);
-            glVertex2f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() - scaleDefault);
+            glVertex3f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() + scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() - scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() + scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() + scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() + scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() - scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() - scaleDefault, quads[i]->getPosY() - scaleDefault, 0.f);
+            glVertex3f(quads[i]->getPosX() + scaleDefault, quads[i]->getPosY() - scaleDefault, 0.f);
             glEnd();
         }
     }

@@ -11,13 +11,28 @@
 #include <random>
 #include <vector>
 
+// escala padrão dos chunks
 #define DEFAULT_SCALE 0.05f
 
+// variaveis de escopo global
 unsigned int IS_DRAGGING = 0;
 unsigned int WIDTH = 512, HEGIHT = WIDTH;
 int PECA = 1;
 int PECA_AMMOUNT = 0;
+float color_pick[10][3] = {
+    {1.0f, 0.f, 0.f},
+    {0.0f, 0.f, 1.f},
+    {0.0f, 1.f, 0.f},
+    {1.0f, 1.f, 0.f},
+    {1.0f, 0.f, 1.f},
+    {0.5f, 0.f, 1.f},
+    {0.0f, 1.f, 1.0f},
+    {1.f, 0.4f, 0.f},
+    {1.0f, 0.0f, 0.7f},
+    {0.53f, 0.24f, 0.23f},
+};
 
+// definindo um range de números aleatórios para as peças
 std::random_device rd;
 std::default_random_engine eng(rd());
 std::uniform_real_distribution<float> distr(-0.8, 0.8);
@@ -109,6 +124,17 @@ void mouseClickEvent(int button, int state, int x, int y)
                     }
                 }
             }
+            for (int i = 0; i < 10; i++)
+            {
+                float x_start = 1.0f - (float)(i + 1) * DEFAULT_SCALE;
+                float y_start = 1.0f - (float)(i + 1) * DEFAULT_SCALE;
+                if (coord_X > x_start && coord_X < 1.0f && coord_Y > (1.0f - DEFAULT_SCALE) && coord_Y < 1.0f)
+                {
+
+                    objSelected->setColor(color_pick[i][0], color_pick[i][1], color_pick[i][2]);
+                    break;
+                }
+            }
         }
     }
     else if (state == 1)
@@ -124,7 +150,7 @@ void mouseClickEvent(int button, int state, int x, int y)
         switch (PECA)
         {
         case 1:
-            pecaNova = draw1(0.f, 0.f, 0.f);
+            pecaNova = draw1(coord_X, coord_Y, 0.f);
             break;
         case 2:
             pecaNova = draw2(coord_X, coord_Y, 0.f);
@@ -174,12 +200,12 @@ void reshape(int w, int h)
 void clearBuffer()
 {
     glClearColor(1.0f, 1.f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
     for (std::vector<Object *>::iterator it = pecas->begin(); it != pecas->end(); it++)
     {
         Object *obj;
         obj = *it;
-        obj->draw(1.0f, 0.f, 0.f);
+        obj->draw();
         if (objSelected != nullptr)
         {
             objSelected->drawBorder();
@@ -188,55 +214,22 @@ void clearBuffer()
     drawButtonsColors();
     glutSwapBuffers();
 }
-
+float coord_buttons_color[10][3]; /// terminar seleção de cores....
 //draw buttons color pick up
 void drawButtonsColors()
 {
     float x = 1.0f, y = 1.0f, z = 1.0f;
     for (int i = 0; i < 10; i++)
     {
-        switch (i)
-        {
-        case 1:
-            glColor3f(1.0f, 0.f, 0.f);
-            break;
-        case 2:
-            glColor3f(0.0f, 1.f, 0.f);
-            break;
-        case 3:
-            glColor3f(0.0f, 0.f, 1.f);
-            break;
-        case 4:
-            glColor3f(1.0f, 0.f, 1.f);
-            break;
-        case 5:
-            glColor3f(1.0f, 1.f, 0.f);
-            break;
-        case 6:
-            glColor3f(0.0f, 1.f, 1.f);
-            break;
-        case 7:
-            glColor3f(0.1f, 1.f, 0.5f);
-            break;
-        case 8:
-            glColor3f(0.5f, 0.4f, 1.f);
-            break;
-        case 9:
-            glColor3f(0.1f, 0.2f, 1.f);
-            break;
-        case 10:
-            glColor3f(0.0f, 0.2f, 1.f);
-            break;
-        default:
-            break;
-        }
+
         glBegin(GL_QUADS);
+        glColor3f(color_pick[i][0], color_pick[i][1], color_pick[i][2]);
         glVertex2f(x, y);
-        glVertex2f(x - 0.05, y);
-        glVertex2f(x - 0.05, y - 0.05);
-        glVertex2f(x, y - 0.05);
+        glVertex2f(x - DEFAULT_SCALE, y);
+        glVertex2f(x - DEFAULT_SCALE, y - DEFAULT_SCALE);
+        glVertex2f(x, y - DEFAULT_SCALE);
         glEnd();
-        x = x - 0.05;
+        x = x - DEFAULT_SCALE;
     }
 }
 
@@ -268,27 +261,13 @@ void keyboardEvent(unsigned char key, int x, int z)
     case 'r':
         if (objSelected != nullptr)
         {
-            float xx, yy;
-            xx = (float)objSelected->getPosX(0);
-            yy = (float)objSelected->getPosY(0);
-
-            // para rotacionar em 90º não irei utilizar conceitos matemáticos apenas uma solução intuitiva
-            // criarei uma matriz auxiliar para armazenar nas linhas as colunas da atual..
-            // | 0 1 1 |    | 1 0 0 |    | 0 1 1 |
-            // | 0 1 0 | -> | 1 1 1 | -> | 0 1 0 |
-            // | 1 1 0 |    | 0 0 1 |    | 1 1 0 |
-            //
-            // | 0 1 0 |    | 0 1 0 |    | 0 1 0 |    | 0 0 0 |
-            // | 0 1 1 | -> | 1 1 1 | -> | 1 1 0 | -> | 1 1 1 |
-            // | 0 1 0 |    | 0 0 0 |    | 0 1 0 |    | 0 1 0 |
-            //
-            // A solução recomendada seria utilizar glRotatef, mas fiz assim a titulo de curiosidade.
+            int L_cursor = 0, I_cursor = 0, J_cursor = 0;
+            float xx, yy, visibleCoords[9];
+            ;
             Quad *matriz_aux[3][3];
             Quad *matriz_roteted[3][3];
-
-            // pando a lista de chunk para matriz
-            float visibleCoords[9];
-            int L_cursor = 0, I_cursor = 0, J_cursor = 0;
+            xx = (float)objSelected->getPosX(0);
+            yy = (float)objSelected->getPosY(0);
             for (int i = 0; i < 9; i++)
             {
                 if (i % 3 == 0 && i != 0)
@@ -314,6 +293,7 @@ void keyboardEvent(unsigned char key, int x, int z)
             L_cursor = 0, I_cursor = 0, J_cursor = 0;
 
             //verificando as novas coordenadas e persistindo nas lista de chunk
+
             for (int i = 0; i < 9; i++)
             {
                 if (i % 3 == 0 && i != 0)
@@ -322,6 +302,7 @@ void keyboardEvent(unsigned char key, int x, int z)
                 }
                 J_cursor = i % 3;
                 bool rotatedChunkIsVisible = matriz_roteted[I_cursor][J_cursor]->isVisible();
+
                 if (rotatedChunkIsVisible)
                 {
                     visibleCoords[L_cursor] = 1;
@@ -342,6 +323,7 @@ void keyboardEvent(unsigned char key, int x, int z)
                 }
                 else if (visibleCoords[i] == 0)
                 {
+
                     objSelected->quads[i]->setVisible(false);
                 }
             }
@@ -354,63 +336,63 @@ void keyboardEvent(unsigned char key, int x, int z)
 Object *draw1(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[3]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[7]->draw(1.0f, 0.f, 0.f);
+    L->quads[1]->draw();
+    L->quads[3]->draw();
+    L->quads[4]->draw();
+    L->quads[7]->draw();
     return L;
 }
 Object *draw2(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[7]->draw(1.0f, 0.f, 0.f);
+    L->quads[1]->draw();
+    L->quads[4]->draw();
+    L->quads[7]->draw();
     return L;
 }
 Object *draw3(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
-    L->quads[3]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[5]->draw(1.0f, 0.f, 0.f);
+    L->quads[2]->draw();
+    L->quads[3]->draw();
+    L->quads[4]->draw();
+    L->quads[5]->draw();
     return L;
 }
 Object *draw4(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[0]->draw(1.0f, 0.f, 0.f);
-    L->quads[3]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[5]->draw(1.0f, 0.f, 0.f);
+    L->quads[0]->draw();
+    L->quads[3]->draw();
+    L->quads[4]->draw();
+    L->quads[5]->draw();
     return L;
 }
 Object *draw5(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[3]->draw(1.0f, 0.f, 0.f);
+    L->quads[2]->draw();
+    L->quads[1]->draw();
+    L->quads[4]->draw();
+    L->quads[3]->draw();
     return L;
 }
 Object *draw6(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[5]->draw(1.0f, 0.f, 0.f);
-    L->quads[7]->draw(1.0f, 0.f, 0.f);
+    L->quads[2]->draw();
+    L->quads[4]->draw();
+    L->quads[5]->draw();
+    L->quads[7]->draw();
     return L;
 }
 Object *draw7(float x, float y, float z)
 {
     Object *L = new Object(x, y, z, DEFAULT_SCALE);
-    L->quads[1]->draw(1.0f, 0.f, 0.f);
-    L->quads[2]->draw(1.0f, 0.f, 0.f);
-    L->quads[4]->draw(1.0f, 0.f, 0.f);
-    L->quads[5]->draw(1.0f, 0.f, 0.f);
+    L->quads[1]->draw();
+    L->quads[2]->draw();
+    L->quads[4]->draw();
+    L->quads[5]->draw();
     return L;
 }
 /**

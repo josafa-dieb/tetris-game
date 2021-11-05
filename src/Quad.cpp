@@ -16,44 +16,54 @@ Quad::Quad(float x, float y, float z, float scale)
     Quad::z = z;
     Quad::scale = scale;
 }
-void Quad::draw(float r, float g, float b) {
+void Quad::draw()
+{
     glBegin(GL_QUADS);
-        glColor3f(r, g, b);
-        glVertex2f(getPosX() + getScale(), getPosY() - getScale());
-        glVertex2f(getPosX() + getScale(), getPosY() + getScale());
-        glVertex2f((getPosX() - getScale()), (getPosY() + getScale()));
-        glVertex2f((getPosX() - getScale()), (getPosY() - getScale()));
+    glVertex2f(getPosX() + getScale(), getPosY() - getScale());
+    glVertex2f(getPosX() + getScale(), getPosY() + getScale());
+    glVertex2f((getPosX() - getScale()), (getPosY() + getScale()));
+    glVertex2f((getPosX() - getScale()), (getPosY() - getScale()));
     glEnd();
     Quad::visible = true;
 }
-bool Quad::isVisible(){
+bool Quad::isVisible()
+{
     return Quad::visible;
 }
-float Quad::getPosX() {
+float Quad::getPosX()
+{
     return x;
 }
-float Quad::getPosY() {
+float Quad::getPosY()
+{
     return y;
 }
-float Quad::getPosZ() {
+float Quad::getPosZ()
+{
     return z;
 }
-float Quad::getScale() {
+float Quad::getScale()
+{
     return scale;
 }
-void Quad::setPosX(float x) {
-    Quad::x=x;
+void Quad::setPosX(float x)
+{
+    Quad::x = x;
 }
-void Quad::setPosY(float y) {
-    Quad::y=y;
+void Quad::setPosY(float y)
+{
+    Quad::y = y;
 }
-void Quad::setPosZ(float z) {
-    Quad::z=z;
+void Quad::setPosZ(float z)
+{
+    Quad::z = z;
 }
-void Quad::setScale(float scale) {
+void Quad::setScale(float scale)
+{
     Quad::scale = scale;
 }
-void Quad::setVisible(bool visiblity){
+void Quad::setVisible(bool visiblity)
+{
     Quad::visible = visiblity;
 }
 Quad::~Quad()
