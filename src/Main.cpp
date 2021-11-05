@@ -12,7 +12,7 @@
 #include <vector>
 
 // escala padrão dos chunks
-#define DEFAULT_SCALE 0.05f
+#define DEFAULT_SCALE 0.07f
 
 // variaveis de escopo global
 unsigned int IS_DRAGGING = 0;
@@ -142,8 +142,7 @@ void mouseClickEvent(int button, int state, int x, int y)
         IS_DRAGGING = 0;
     }
 
-    if (button == GLUT_RIGHT_BUTTON && state == 0)
-    {
+    if (button == GLUT_RIGHT_BUTTON && state == 0) {
         coord_X = distr(eng);
         coord_Y = distr(eng);
         Object *pecaNova;
